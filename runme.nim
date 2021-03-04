@@ -33,7 +33,7 @@ proc jlLoop() =
   echo "-- BEGIN --"
   jlInclude("pymod/hooks.jl")
   let jlArg = jlBox(36.36'f64)
-  var res = (jlCall("testMeBaby", jlArg)).to(float64)
+  var res = jlCall("testMeBaby", jlArg).to(float64)
   echo res
   echo "-- END -- "
 
