@@ -1,9 +1,12 @@
 import osproc
 import os
-
 import zmq
-
 import nimpy
+
+var shouldRun = true
+proc stopLoop*() {.noconv.} =
+  shouldRun = false
+
 proc deserialize(strbuf: string) : PyObject =
   let pickle = pyImport("pickle")
   result = pickle.loads(strbuf)
@@ -19,9 +22,10 @@ proc pyLoop() =
   discard py.print(strbuf.deserialize())
 
 proc mainPy() =
-  pyLoop()
-  discard readLine(stdin)
-  pyLoop()
+  while shouldRun:
+    pyLoop()
+    discard readLine(stdin)
+    pyLoop()
 
 import nimjl
 proc jlLoop() =
@@ -33,9 +37,10 @@ proc jlLoop() =
   echo "-- END -- "
 proc mainJl() =
   jlVmInit()
-  jlLoop()
-  discard readLine(stdin)
-  jlLoop()
+  while shouldRun:
+    jlLoop()
+    discard readLine(stdin)
+    jlLoop()
   jlVmExit(0)
 
 when isMainModule:
