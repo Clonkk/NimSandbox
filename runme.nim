@@ -1,13 +1,14 @@
 import osproc
-import os
 import zmq
 import nimpy
+import nimjl
 
 var shouldRun = true
 proc stopLoop*() {.noconv.} =
   shouldRun = false
 
 proc deserialize(strbuf: string) : PyObject =
+  # Same comment as serialize : see execpy.nim
   let pickle = pyImport("pickle")
   result = pickle.loads(strbuf)
 
@@ -21,13 +22,12 @@ proc pyLoop() =
   let py = pyBuiltinsModule()
   discard py.print(strbuf.deserialize())
 
-proc mainPy() =
+proc mainPy() {.used.} =
   while shouldRun:
     pyLoop()
     discard readLine(stdin)
     pyLoop()
 
-import nimjl
 proc jlLoop() =
   echo "-- BEGIN --"
   jlInclude("pymod/hooks.jl")
@@ -35,7 +35,9 @@ proc jlLoop() =
   var res = (jlCall("testMeBaby", jlArg)).to(float64)
   echo res
   echo "-- END -- "
-proc mainJl() =
+
+# I don't like unused warnings
+proc mainJl() {.used.} =
   jlVmInit()
   while shouldRun:
     jlLoop()
