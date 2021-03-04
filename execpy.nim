@@ -16,6 +16,7 @@ proc serialize(pyObj: PyObject): string =
 
 # TODO this should take argument based on command line
 proc mainPy() =
+  # We could imagine to use a PUSH/PULL ZMQ pattern and launch multiple process in parallel to distribute the work
   var conn = connect("ipc:///tmp/execpycom", PAIR)
   defer: conn.close()
   echo "-- BEGIN --"
@@ -25,6 +26,8 @@ proc mainPy() =
   let pyhooks = pyImport(pymodule)
   var param = 36.36
   var res = pyhooks.testMeBaby(param)
+
+  # Multiple return values can be handled using zmq SNDMORE flags
   conn.send(res.serialize())
 
   echo res.to(float)

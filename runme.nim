@@ -13,6 +13,7 @@ proc deserialize(strbuf: string) : PyObject =
   result = pickle.loads(strbuf)
 
 proc pyLoop() =
+  # PAIR pattern by default but PUB/SUB or PUSH/PULL are possibilites for more complex application
   var conn = listen("ipc:///tmp/execpycom", PAIR)
   # I trust Nim's compiler to not recompile a file he knows
   discard execCmd("nim r execpy.nim") # TODO pass argument on command line
