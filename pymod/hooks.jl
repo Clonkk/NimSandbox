@@ -1,4 +1,10 @@
-function testMeBaby(a)
+function testMeBaby(obj)
   println("testMeBaby says a different thing !")
-  return a+9.8
+  println(typeof(obj))
+  println("-------------")
+  println(obj.a.dict)
+  println(obj.a.dat)
+  println("-------------")
+  println(obj.b)
+  println("-------------")
 end

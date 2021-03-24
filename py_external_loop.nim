@@ -1,8 +1,10 @@
 import osproc
+import tables
 import os
+
 import zmq
 import nimpy
-import nimjl
+
 
 # TODO fix exit loop condition with readLine
 var shouldRun = true
@@ -35,24 +37,6 @@ proc mainPy() {.used.} =
     discard readLine(stdin)
     pyLoop()
 
-proc jlLoop() =
-  echo "-- BEGIN --"
-  jlInclude("pymod/hooks.jl")
-  let jlArg = jlBox(36.36'f64)
-  var res = jlCall("testMeBaby", jlArg).to(float64)
-  echo res
-  echo "-- END -- "
-
-# I don't like unused warnings
-proc mainJl() {.used.} =
-  jlVmInit()
-  while shouldRun:
-    jlLoop()
-    discard readLine(stdin)
-    jlLoop()
-  jlVmExit(0)
-
 when isMainModule:
   setControlCHook(stopLoop)
-  # mainJl()
   mainPy()
